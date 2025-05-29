@@ -40,7 +40,7 @@ class AllocineScraper:
                     self.driver.get(url)
                     self.driver.implicitly_wait(5)
                     rating_tags = self.driver.find_elements(By.CSS_SELECTOR, "a.xXx.rating-title")
-                    for i in range(1, len(rating_tags), 2):
+                    for i in range(1, len(rating_tags), 2): 
                         text = rating_tags[i].text.strip().lower()
                         if "spectateurs" not in text:
                             continue
