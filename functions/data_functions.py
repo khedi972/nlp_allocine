@@ -19,7 +19,6 @@ def date_treatment(date_str: Type[str]):
     
     """
     The function reads each scrape date (in string) and does the following processing:
-    
     - breakdown of each string element: day, month, year
     - each element is reformatted to an integer
     - use reformatted elements to construct a date (in datetime format)
