@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "arch>=7.2.0",
+    "black>=25.1.0",
     "bs4>=0.0.2",
     "fastparquet>=2024.11.0",
     "gensim>=4.3.2",
@@ -27,3 +28,16 @@ dependencies = [
     "wordcloud>=1.9.4",
     "yellowbrick>=1.5",
 ]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+exclude = '''
+/(
+  \.venv
+  | \.git
+  |.gitignore
+  | __pycache__
+  | \.ipynb_checkpoints
+)/
+'''
