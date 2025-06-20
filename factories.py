@@ -22,3 +22,8 @@ date_month_dict = {
     "novembre" : 11,
     "décembre" : 12
 }
+
+dict_import_path = {
+    'init_data' : '.\data\init_data\\',
+    'treat_data' : '.\data\treat_data\\'
+}
