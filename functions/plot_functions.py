@@ -56,21 +56,37 @@ def set_plot_style():
         }
     )
 
-def plot_movie_type_distribution(data: Type[pd.DataFrame], column: Type[str] = 'types_movie'):
+def plot_movie_type_distribution(data: Type[pd.DataFrame], column: Type[str] = 'types_movie') -> None:
+    """
+    Plot the distribution of movie types as a bar chart, including percentage labels 
+    and an annotation for under-represented categories.
+
+    This function calculates the frequency and relative percentage of a specified column
+    in a DataFrame (default is 'types_movie') and creates a bar chart showing the distribution.
+    It also highlights two under-represented movie types with an annotation arrow.
+
+    Args:
+        data (DataFrame): The input DataFrame containing movie data.
+        column (str): The name of the column containing movie type labels. 
+            Defaults to 'types_movie'.
+
+    Returns:
+        None: Displays the bar chart but does not return any object.
+    """
     
-    # Compute count and percentage
+    # compute count and percentage
     tab_types = data[column].value_counts(sort=True)
     tab_types_pct = (tab_types / data.shape[0]) * 100
 
     plt.figure(figsize=(10, 6))
     bars = plt.bar(tab_types.index, tab_types.values, color="steelblue")
 
-    # Add percentage labels above bars
+    # adding percentage labels above bars
     for idx, pct in enumerate(tab_types_pct):
         y_val = tab_types.values[idx]
         plt.text(idx, y_val, f"{pct:.2f}%", ha='center', va='bottom', fontsize=8)
 
-    # Annotation (arrow) between two specific under-represented bars
+    # annotation (arrow) between two specific under-represented bars
     target_idx_arrow1, target_idx_arrow2 = 5, 6
     x_arrow = (target_idx_arrow1 + target_idx_arrow2) / 2
     y_arrow = max(tab_types.values[[target_idx_arrow1, target_idx_arrow2]])
@@ -85,7 +101,7 @@ def plot_movie_type_distribution(data: Type[pd.DataFrame], column: Type[str] = '
         ha='center'
     )
 
-    # Formatting
+    # plot formatting
     plt.gca().yaxis.set_major_formatter(StrMethodFormatter('{x:,.0f}'))
     plt.xlabel('Movie Types')
     plt.ylabel('Count & Percentage (%)')
