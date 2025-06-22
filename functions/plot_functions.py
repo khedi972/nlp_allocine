@@ -93,8 +93,8 @@ def plot_movie_type_distribution(data: Type[pd.DataFrame], column: Type[str] = '
 
     plt.annotate(
         "Under-Representation",
-        xy=(x_arrow, y_arrow + 600),
-        xytext=(x_arrow + 0.3, y_arrow + 3500),
+        xy=(x_arrow, y_arrow + 200),
+        xytext=(x_arrow + 0.3, y_arrow + 1000),
         arrowprops=dict(arrowstyle="->", color="firebrick", lw=1.5),
         fontsize=9,
         color="black",
@@ -106,6 +106,51 @@ def plot_movie_type_distribution(data: Type[pd.DataFrame], column: Type[str] = '
     plt.xlabel('Movie Types')
     plt.ylabel('Count & Percentage (%)')
     plt.title('Movie Types Distribution', pad=15)
-    plt.ylim([0, 18000])
+    plt.ylim([0, 4000])
     plt.tight_layout()
+    plt.show()
+    
+def plot_moving_averages(dataset: Type[pd.DataFrame],
+                         figsize: Type[tuple]) -> None:
+    """
+    Plot two subplots in a single figure:
+    1) Overall moving average of 'rolling_scores_30d' by date.
+    2) Moving average of 'rolling_scores_30d' by date and separated by 'types_movie'.
+
+    Args:
+        dataset (DataFrame): DataFrame with columns 'date', 'types_movie', and 'rolling_scores_30d'.
+        figsize (tuple): Figure size.
+
+    Returns:
+        None: Displays the figure with two subplots.
+    """
+    # prepare overall series (mean per date and no movie types)
+    unique_serie = dataset[['date', 'rolling_scores_30d']].groupby('date', as_index=False)['rolling_scores_30d'].mean()
+    y_min1, y_max1 = unique_serie['rolling_scores_30d'].min(), unique_serie['rolling_scores_30d'].max()
+
+    # prepare min/max for all data (with movie types)
+    y_min2, y_max2 = dataset['rolling_scores_30d'].min(), dataset['rolling_scores_30d'].max()
+
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=figsize)
+
+    # plot overall moving average
+    ax1.plot(unique_serie['date'], unique_serie['rolling_scores_30d'], linewidth=0.85)
+    ax1.axhspan(y_min1, y_max1, xmin=0, xmax=1, color='green', alpha=0.1)
+    ax1.xaxis.set_major_locator(mdates.YearLocator(base=1))
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+    ax1.set_ylim([0, 5])
+    ax1.set_title('Moving Average of scores', fontsize=10)
+
+    # plot moving average by movie types
+    for type_ in dataset['types_movie'].unique():
+        type_df = dataset[dataset['types_movie'] == type_]
+        ax2.plot(type_df['date'], type_df['rolling_scores_30d'], linewidth=1, alpha=0.7, label=type_)
+    ax2.axhspan(y_min2, y_max2, xmin=0, xmax=1, color='green', alpha=0.1)
+    ax2.xaxis.set_major_locator(mdates.YearLocator(base=1))
+    ax2.xaxis.set_major_formatter(mdates.DateFormatter('%Y'))
+    ax2.set_ylim([0, 5])
+    ax2.legend(fontsize=8)
+    ax2.set_title('Moving Average of scores by type of movies', fontsize=10)
+
+    plt.tight_layout(pad=5)
     plt.show()
