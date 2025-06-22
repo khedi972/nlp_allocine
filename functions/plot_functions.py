@@ -1,10 +1,13 @@
 import warnings
 from typing import Type
 
+import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
+from matplotlib.ticker import StrMethodFormatter
+
 import pandas as pd
 import seaborn as sns
-from matplotlib.ticker import StrMethodFormatter
+
 
 warnings.filterwarnings('ignore')
 
@@ -110,7 +113,7 @@ def plot_movie_type_distribution(data: Type[pd.DataFrame], column: Type[str] = '
     plt.tight_layout()
     plt.show()
     
-def plot_moving_averages(dataset: Type[pd.DataFrame],
+def plot_moving_averages(data: Type[pd.DataFrame],
                          figsize: Type[tuple]) -> None:
     """
     Plot two subplots in a single figure:
@@ -125,11 +128,11 @@ def plot_moving_averages(dataset: Type[pd.DataFrame],
         None: Displays the figure with two subplots.
     """
     # prepare overall series (mean per date and no movie types)
-    unique_serie = dataset[['date', 'rolling_scores_30d']].groupby('date', as_index=False)['rolling_scores_30d'].mean()
+    unique_serie = data[['date', 'rolling_scores_30d']].groupby('date', as_index=False)['rolling_scores_30d'].mean()
     y_min1, y_max1 = unique_serie['rolling_scores_30d'].min(), unique_serie['rolling_scores_30d'].max()
 
     # prepare min/max for all data (with movie types)
-    y_min2, y_max2 = dataset['rolling_scores_30d'].min(), dataset['rolling_scores_30d'].max()
+    y_min2, y_max2 = data['rolling_scores_30d'].min(), data['rolling_scores_30d'].max()
 
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=figsize)
 
@@ -142,8 +145,8 @@ def plot_moving_averages(dataset: Type[pd.DataFrame],
     ax1.set_title('Moving Average of scores', fontsize=10)
 
     # plot moving average by movie types
-    for type_ in dataset['types_movie'].unique():
-        type_df = dataset[dataset['types_movie'] == type_]
+    for type_ in data['types_movie'].unique():
+        type_df = data[data['types_movie'] == type_]
         ax2.plot(type_df['date'], type_df['rolling_scores_30d'], linewidth=1, alpha=0.7, label=type_)
     ax2.axhspan(y_min2, y_max2, xmin=0, xmax=1, color='green', alpha=0.1)
     ax2.xaxis.set_major_locator(mdates.YearLocator(base=1))
